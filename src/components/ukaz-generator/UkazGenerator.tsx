@@ -187,7 +187,7 @@ function UkazGenerator() {
 
             {/* Печать (замените src на свою) */}
             <img
-              src="kot/kotPrint.png"
+              src="kotPrint.png"
               alt="Печать"
               className="w-24 h-24 object-contain"
             />
