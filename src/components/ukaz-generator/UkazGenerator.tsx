@@ -1,12 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import domtoimage from "dom-to-image";
 import dayjs from "dayjs";
 
 function UkazGenerator() {
-  const [prikazNumber, setPrikazNumber] = useState("");
-  const [prikazText, setPrikazText] = useState("");
-  const [date, setDate] = useState("");
-  const [signer, setSigner] = useState("mayor"); // "mayor" или "future"
+  // Получаем сегодняшнюю дату в формате 'YYYY-MM-DD'
+  const today = dayjs().format('YYYY-MM-DD');
+
+  const [prikazNumber, setPrikazNumber] = useState<string>(() => {
+    return localStorage.getItem("prikazNumber") || "";
+  });
+  const [prikazText, setPrikazText] = useState<string>("");
+  const [date, setDate] = useState<string>(() => {
+    return localStorage.getItem("date") || today;
+  });
+  const [signer, setSigner] = useState<string>(() => {
+    return localStorage.getItem("signer") || "mayor";
+  });
+
+  // Сохраняем изменения в localStorage при изменении состояний
+  useEffect(() => {
+    localStorage.setItem("prikazNumber", prikazNumber);
+  }, [prikazNumber]);
+
+  useEffect(() => {
+    localStorage.setItem("date", date);
+  }, [date]);
+
+  useEffect(() => {
+    localStorage.setItem("signer", signer);
+  }, [signer]);
 
   const handleSaveAsImage = () => {
     const node = document.getElementById("printableArea");
@@ -92,11 +114,6 @@ function UkazGenerator() {
         Сохранить как изображение
       </button>
 
-      {/*
-        Обёртка с overflow для мобильных экранов:
-        Позволяет горизонтально/вертикально скроллить,
-        если блок (A5) выходит за границы экрана.
-      */}
       <div className="overflow-auto">
         {/* Область указа (A5) */}
         <div
@@ -114,9 +131,6 @@ function UkazGenerator() {
             flex flex-col
             justify-between
           "
-          style={{
-            backgroundImage: 'url("/images/paper-texture.jpg")', // Замените на свой путь
-          }}
         >
           {/* Шапка */}
           <header className="text-center">
